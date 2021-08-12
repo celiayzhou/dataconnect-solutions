@@ -177,6 +177,10 @@
         },
         "wcAdmins.groupId": {
             "type": "string"
+        },
+        "subscriptionId": {
+            "type": "string",
+            "defaultValue": "[subscription().subscriptionId]"
         }
     },
     "variables": {
@@ -452,7 +456,7 @@
                         "value": "[resourceGroup().name]"
                     },
                     "subscriptionId": {
-                        "value": "[subscription().subscriptionId]"
+                        "value": "[parameters('subscriptionId')]"
                     },
                     "wcAdmins.groupId": {
                         "value": "[parameters('wcAdmins.groupId')]"

@@ -117,7 +117,8 @@ def provision_databricks_cluster(install_config: InstallConfiguration,
 
         if cluster_state == "TERMINATING" or cluster_state == "TERMINATED" or cluster_state == "ERROR":
             print("Can't install managed libraries, cluster %s is not running" % cluster_id)
-            raise RuntimeError("Can't install managed libraries, cluster %s is not running. Check Databricks Workspace Portal for details and  try again later" % cluster_id)
+            raise RuntimeError(
+                "Can't install managed libraries, cluster %s is not running. Check Databricks Workspace Portal for details and  try again later" % cluster_id)
         else:
             try:
                 print("Installing managed libraries on cluster %s " % cluster_id)
@@ -169,7 +170,8 @@ def upload_artifacts(workspace_url: str, oauth_access_token: str, local_artifact
     adb_client = DatabricksAPI(host=workspace_url, token=oauth_access_token)
     files_to_upload = []
     if isdir(local_artifacts_path):
-        files_to_upload = [join(local_artifacts_path, f) for f in listdir(local_artifacts_path) if isfile(join(local_artifacts_path, f))]
+        files_to_upload = [join(local_artifacts_path, f) for f in listdir(local_artifacts_path) if
+                           isfile(join(local_artifacts_path, f))]
     else:
         files_to_upload = [local_artifacts_path]
     dbfs_folder_exists = False
@@ -206,7 +208,8 @@ def enable_webapp_alert(resource_group: str, alert_name: str, enabled: bool = Tr
     try:
         # This call will fail if alert does not exist
         az_cli("monitor metrics alert show", "--resource-group", resource_group, "--name", alert_name)
-        return az_cli("monitor metrics alert update", "--resource-group", resource_group, "--name", alert_name, "--enabled", str(enabled).lower())
+        return az_cli("monitor metrics alert update", "--resource-group", resource_group, "--name", alert_name,
+                      "--enabled", str(enabled).lower())
     except BaseException as er:
         return None
 
@@ -233,10 +236,11 @@ def _get_earliest_6am_in_past(utc_now):
     return pipeline_start_time_str
 
 
-def create_main_arm_parameters(install_config: InstallConfiguration, base_uri: str = None, sas_token: str = None, docker_login: str = None,
+def create_main_arm_parameters(install_config: InstallConfiguration, base_uri: str = None, sas_token: str = None,
+                               docker_login: str = None,
                                docker_password: str = None, app_version: str = "1.0.2",
                                log_analytic_ws_name: str = None, admin_full_name: str = None, admin_email: str = None,
-                               meeting_organizer_email: str = None):
+                               meeting_organizer_email: str = None, subscription_id: str = None):
     parameters = dict()
     for key, value in install_config.required_arm_params.items():
         parameters[key] = {
@@ -297,7 +301,8 @@ def create_main_arm_parameters(install_config: InstallConfiguration, base_uri: s
         }
         if "365Adf-reader.sp.objectId" in install_config.arm_params:
             parameters["365Adf-reader.sp.objectId"] = {
-                "value": get_service_principal_object_id(app_id=install_config.m365_reader_service_principal["objectId"])
+                "value": get_service_principal_object_id(
+                    app_id=install_config.m365_reader_service_principal["objectId"])
             }
     if log_analytic_ws_name:
         parameters['logs.workspace.name'] = {
@@ -334,6 +339,11 @@ def create_main_arm_parameters(install_config: InstallConfiguration, base_uri: s
     parameters["wcAdmins.groupId"] = {
         "value": install_config.wc_admin_ad_group['objectId']
     }
+
+    if subscription_id is not None:
+        parameters["subscriptionId"] = {
+            "value": subscription_id
+        }
 
     json_data = {
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",

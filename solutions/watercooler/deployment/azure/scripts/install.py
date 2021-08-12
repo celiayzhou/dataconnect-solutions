@@ -163,6 +163,7 @@ def execute_deploy_mainTemplate(parsed_args):
     docker_login = parsed_args.docker_login
     docker_password = parsed_args.docker_password
     log_analytic_enabled = parsed_args.log_analytic_enabled
+    subscription_id = parsed_args.subscription_id
     main_template_uri = template_base_uri + "mainTemplate.json" + "?" + sas_token
     log_analytic_ws_name = None
     if log_analytic_enabled:
@@ -186,7 +187,8 @@ def execute_deploy_mainTemplate(parsed_args):
                                                      log_analytic_ws_name=log_analytic_ws_name,
                                                      admin_full_name=full_name,
                                                      admin_email=alert_admin_email,
-                                                     meeting_organizer_email=meeting_organizer_email)
+                                                     meeting_organizer_email=meeting_organizer_email,
+                                                     subscription_id=subscription_id)
 
     arm_params_json_file = os.path.join(install_config.get_wc_dir(), "wc_arm_params.json")
     with open(arm_params_json_file, "w") as param_file:

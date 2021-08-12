@@ -202,7 +202,7 @@ fi
 echo "Creating resource group  $RESOURCE_GROUP in $LOCATION"
 
 CONTAINER="wc-artifacts"
-az group create --name ${RESOURCE_GROUP} --location "$LOCATION" --output none
+az group create --name ${RESOURCE_GROUP} --location "$LOCATION" --subscription ${SUBSCRIPTION_ID} --output none
 
 TMP_AZURE_STORAGE_ACCOUNT=$(az storage account list --resource-group ${RESOURCE_GROUP} --query "[?starts_with(name, 'wcdeploy')].name" -o tsv)
 
